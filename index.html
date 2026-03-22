@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>署名アトリエ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #F7F6F4;
+      --panel:   #FFFFFF;
+      --border:  #E6E2DC;
+      --text:    #282420;
+      --muted:   #9A9590;
+      --r:       5px;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Noto Sans JP', -apple-system, sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    .app-header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 28px;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+    .app-title {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 300;
+      font-size: 19px;
+      letter-spacing: 0.22em;
+    }
+    .app-sub {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.07em;
+    }
+
+    /* ── Layout ─────────────────────────────────────── */
+    .app-body {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+
+    /* ── Side Panel ─────────────────────────────────── */
+    .side-panel {
+      width: 296px;
+      min-width: 296px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      scrollbar-width: thin;
+    }
+    .side-panel::-webkit-scrollbar { width: 4px; }
+    .side-panel::-webkit-scrollbar-track { background: transparent; }
+    .side-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .p-section {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .p-section:last-child { border-bottom: none; }
+
+    .sec-label {
+      font-size: 9.5px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 13px;
+    }
+
+    /* Upload */
+    .upload-zone {
+      border: 1.5px dashed var(--border);
+      border-radius: var(--r);
+      padding: 18px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      color: var(--muted);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .upload-zone:hover, .upload-zone.drag-on {
+      border-color: #888;
+      background: #FAFAF8;
+    }
+    .upload-icon { font-size: 22px; display: block; margin-bottom: 7px; }
+    .upload-main { font-size: 12px; }
+    .upload-hint { font-size: 10px; color: #C0BDB7; margin-top: 3px; }
+    .upload-name {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text);
+      font-weight: 400;
+      word-break: break-all;
+    }
+
+    /* Fields */
+    .field { margin-bottom: 11px; }
+    .field:last-child { margin-bottom: 0; }
+
+    .f-label {
+      display: block;
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      letter-spacing: 0.04em;
+    }
+    .f-input, .f-select {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      color: var(--text);
+      background: #FFFFFF;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .f-select {
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23ABA8A2' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+      cursor: pointer;
+    }
+    .f-input:focus, .f-select:focus { border-color: #999; }
+    .f-custom { margin-top: 6px; }
+
+    /* Color swatches */
+    .swatches {
+      display: flex;
+      gap: 10px;
+    }
+    .sw-group { text-align: center; }
+    .swatch {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+      transition: transform .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .swatch:hover { transform: scale(1.1); }
+    .swatch.sel {
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15),
+                  0 0 0 2px var(--panel),
+                  0 0 0 4px #666;
+      transform: scale(1.13);
+    }
+    .sw-name {
+      font-size: 8.5px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.02em;
+    }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 8px; }
+    .btn {
+      flex: 1;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      background: #fff;
+      cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:hover {
+      background: var(--text);
+      color: #fff;
+      border-color: var(--text);
+    }
+    .btn-fill {
+      background: var(--text);
+      color: #fff;
+      border-color: var(--text);
+    }
+    .btn-fill:hover { background: #444; border-color: #444; }
+
+    /* ── Preview ─────────────────────────────────────── */
+    .preview-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      padding: 32px;
+      background: var(--bg);
+    }
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 40px; display: block; margin-bottom: 14px; opacity: .22; }
+    .empty-text { font-size: 13px; line-height: 1.8; }
+
+    #canvas {
+      display: block;
+      max-width: 100%;
+      max-height: calc(100vh - 130px);
+      width: auto;
+      height: auto;
+      box-shadow: 0 6px 32px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
+    }
+    #canvasWrap { display: none; }
+
+    /* ── Mobile ─────────────────────────────────────── */
+    @media (max-width: 680px) {
+      .app-header { padding: 14px 16px; }
+      .app-body { flex-direction: column; height: auto; }
+      .side-panel {
+        width: 100%;
+        min-width: unset;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .preview-area {
+        padding: 20px 16px;
+        min-height: 320px;
+      }
+      #canvas { max-height: 60vh; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1 class="app-title">署名アトリエ</h1>
+  <span class="app-sub">作品に、静かな余白と署名を。</span>
+</header>
+
+<div class="app-body">
+
+  <!-- ── Control Panel ────────────────────────────── -->
+  <aside class="side-panel">
+
+    <!-- Upload -->
+    <div class="p-section">
+      <div class="sec-label">作品画像</div>
+      <div class="upload-zone" id="uploadZone" role="button" tabindex="0"
+           aria-label="画像をアップロード">
+        <span class="upload-icon">🖼</span>
+        <div class="upload-main">タップまたはドロップ</div>
+        <div class="upload-hint">JPG · PNG · WebP</div>
+        <div class="upload-name" id="fileName" style="display:none"></div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*"
+             style="display:none" aria-hidden="true">
+    </div>
+
+    <!-- Artwork Info -->
+    <div class="p-section">
+      <div class="sec-label">作品情報</div>
+
+      <div class="field">
+        <label class="f-label" for="titleIn">タイトル</label>
+        <input class="f-input" type="text" id="titleIn" placeholder="無題">
+      </div>
+
+      <div class="field">
+        <label class="f-label" for="authorSel">作者</label>
+        <select class="f-select" id="authorSel">
+          <option value="">— 選択 —</option>
+          <option value="ことは">ことは</option>
+          <option value="はるにゃ">はるにゃ</option>
+          <option value="Halnya">Halnya</option>
+          <option value="__c__">自由入力…</option>
+        </select>
+        <input class="f-input f-custom" type="text" id="authorIn"
+               placeholder="作者名" style="display:none">
+      </div>
+
+      <div class="field">
+        <label class="f-label" for="paperSel">紙・支持体</label>
+        <select class="f-select" id="paperSel">
+          <option value="">— 選択 —</option>
+          <option value="ウォーターフォード細目">ウォーターフォード細目</option>
+          <option value="マーメード">マーメード</option>
+          <option value="ダイソーエンボスペーパー">ダイソーエンボスペーパー</option>
+          <option value="AI生成">AI生成</option>
+          <option value="__c__">自由入力…</option>
+        </select>
+        <input class="f-input f-custom" type="text" id="paperIn"
+               placeholder="紙・支持体" style="display:none">
+      </div>
+
+      <div class="field">
+        <label class="f-label" for="mediumSel">画材</label>
+        <select class="f-select" id="mediumSel">
+          <option value="">— 選択 —</option>
+          <option value="透明水彩">透明水彩</option>
+          <option value="水彩色鉛筆">水彩色鉛筆</option>
+          <option value="アクリル絵の具">アクリル絵の具</option>
+          <option value="アクリルマーカー">アクリルマーカー</option>
+          <option value="Gemini">Gemini</option>
+          <option value="Chat-GPT">Chat-GPT</option>
+          <option value="__c__">自由入力…</option>
+        </select>
+        <input class="f-input f-custom" type="text" id="mediumIn"
+               placeholder="画材" style="display:none">
+      </div>
+    </div>
+
+    <!-- Frame Color -->
+    <div class="p-section">
+      <div class="sec-label">額装カラー</div>
+      <div class="swatches">
+        <div class="sw-group">
+          <div class="swatch sel" data-color="#FFFFFF"
+               style="background:#FFFFFF" title="白"></div>
+          <div class="sw-name">白</div>
+        </div>
+        <div class="sw-group">
+          <div class="swatch" data-color="#F5F5F0"
+               style="background:#F5F5F0" title="アイボリー"></div>
+          <div class="sw-name">象牙</div>
+        </div>
+        <div class="sw-group">
+          <div class="swatch" data-color="#D9D4CC"
+               style="background:#D9D4CC" title="グレージュ"></div>
+          <div class="sw-name">灰白</div>
+        </div>
+        <div class="sw-group">
+          <div class="swatch" data-color="#808080"
+               style="background:#808080" title="グレー"></div>
+          <div class="sw-name">灰</div>
+        </div>
+        <div class="sw-group">
+          <div class="swatch" data-color="#1A1A1A"
+               style="background:#1A1A1A" title="黒"></div>
+          <div class="sw-name">黒</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Watermark -->
+    <div class="p-section">
+      <div class="sec-label">透かし（ウォーターマーク）</div>
+      <div class="field">
+        <label class="f-label" for="wmSel">テキスト</label>
+        <select class="f-select" id="wmSel">
+          <option value="ko-to-ha">ko-to-ha</option>
+          <option value="Halnya">Halnya</option>
+          <option value="__c__">自由入力…</option>
+          <option value="">なし</option>
+        </select>
+        <input class="f-input f-custom" type="text" id="wmIn"
+               placeholder="透かしテキスト" style="display:none">
+      </div>
+    </div>
+
+    <!-- Export -->
+    <div class="p-section">
+      <div class="sec-label">書き出し</div>
+      <div class="btn-row">
+        <button class="btn btn-fill" id="dlJpg">↓ JPG</button>
+        <button class="btn"          id="dlPng">↓ PNG</button>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── Preview Area ──────────────────────────────── -->
+  <main class="preview-area">
+    <div class="empty-state" id="emptyState">
+      <span class="empty-icon">🎨</span>
+      <p class="empty-text">画像をアップロードすると<br>プレビューが表示されます</p>
+    </div>
+    <div id="canvasWrap">
+      <canvas id="canvas"></canvas>
+    </div>
+  </main>
+
+</div>
+
+<script>
+'use strict';
+
+/* ── State ──────────────────────────────────────────── */
+const S = {
+  img:       null,
+  title:     '',
+  author:    '',
+  paper:     '',
+  medium:    '',
+  bgColor:   '#FFFFFF',
+  watermark: 'ko-to-ha',
+};
+
+/* ── DOM ────────────────────────────────────────────── */
+const $  = id => document.getElementById(id);
+const cv = $('canvas');
+const cx = cv.getContext('2d');
+
+/* ── Font loading ───────────────────────────────────── */
+let fontsOk = false;
+document.fonts.ready.then(() => {
+  fontsOk = true;
+  render();
+});
+
+/* ── Luminance / adaptive text colors ──────────────── */
+function luminance(hex) {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.slice(0,2), 16) / 255;
+  const g = parseInt(h.slice(2,4), 16) / 255;
+  const b = parseInt(h.slice(4,6), 16) / 255;
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function palette(bg) {
+  const l = luminance(bg);
+  return {
+    primary:  l > 0.38 ? '#2A2420' : '#F0EDE8',
+    secondary:l > 0.38 ? '#8A8480' : '#B0ACA6',
+    hairline: l > 0.38 ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,0.12)',
+  };
+}
+
+/* ── Render ─────────────────────────────────────────── */
+function render() {
+  if (!S.img) return;
+
+  const img = S.img;
+  const iw  = img.naturalWidth;
+  const ih  = img.naturalHeight;
+
+  // Margins
+  const sm = Math.round(Math.max(8, iw * 0.011));   // side + top (thin)
+  const bm = Math.round(ih * 0.18);                  // bottom caption area
+
+  const cw = iw + sm * 2;
+  const ch = ih + sm + bm;
+
+  cv.width  = cw;
+  cv.height = ch;
+
+  const pal = palette(S.bgColor);
+
+  // Background
+  cx.fillStyle = S.bgColor;
+  cx.fillRect(0, 0, cw, ch);
+
+  // Image
+  cx.drawImage(img, sm, sm, iw, ih);
+
+  // Hairline between image and caption
+  cx.strokeStyle = pal.hairline;
+  cx.lineWidth   = 1;
+  cx.beginPath();
+  cx.moveTo(sm,      sm + ih + 0.5);
+  cx.lineTo(sm + iw, sm + ih + 0.5);
+  cx.stroke();
+
+  // ── Caption ─────────────────────────────────────────
+  const capTop  = sm + ih;
+  const capLeft = sm + Math.round(iw * 0.042);
+
+  // Font sizes scaled to caption height
+  const titleSz  = Math.round(Math.max(14, bm * 0.215));
+  const authorSz = Math.round(Math.max(10, bm * 0.138));
+  const subSz    = Math.round(Math.max(9,  bm * 0.115));
+  const lineGap  = Math.round(bm * 0.072);
+
+  // Build text lines
+  const lines = [];
+  if (S.author) lines.push({
+    text: S.author, size: authorSz, color: pal.secondary, weight: '300',
+    font: `300 ${authorSz}px "Noto Sans JP", sans-serif`,
+  });
+  if (S.title) lines.push({
+    text: S.title, size: titleSz, color: pal.primary, weight: '300',
+    font: `300 ${titleSz}px "Noto Serif JP", "游明朝", YuMincho, serif`,
+  });
+  const sub = [S.medium, S.paper].filter(Boolean).join(' / ');
+  if (sub) lines.push({
+    text: sub, size: subSz, color: pal.secondary, weight: '300',
+    font: `300 ${subSz}px "Noto Sans JP", sans-serif`,
+  });
+
+  if (lines.length > 0) {
+    const totalH = lines.reduce((s, l) => s + l.size, 0) +
+                   (lines.length - 1) * lineGap;
+    let y = capTop + Math.round((bm - totalH) / 2) + lines[0].size;
+
+    cx.textBaseline = 'alphabetic';
+    lines.forEach(line => {
+      cx.font      = line.font;
+      cx.fillStyle = line.color;
+      cx.fillText(line.text, capLeft, y);
+      y += line.size + lineGap;
+    });
+  }
+
+  // ── Watermark ───────────────────────────────────────
+  if (S.watermark) {
+    const wmSz  = Math.round(Math.max(9, iw * 0.021));
+    cx.font     = `300 ${wmSz}px "Noto Sans JP", sans-serif`;
+    cx.textBaseline = 'alphabetic';
+
+    const wmW   = cx.measureText(S.watermark).width;
+    const wmPad = Math.round(Math.max(7, iw * 0.013));
+
+    const wx = sm + iw - wmW - wmPad;
+    const wy = sm + ih - wmPad;
+
+    cx.save();
+    cx.globalAlpha   = 0.17;
+    cx.shadowColor   = 'rgba(0,0,0,0.45)';
+    cx.shadowBlur    = 4;
+    cx.fillStyle     = '#FFFFFF';
+    cx.fillText(S.watermark, wx, wy);
+    cx.restore();
+  }
+}
+
+/* ── File loading ───────────────────────────────────── */
+function loadFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    S.img = img;
+    $('emptyState').style.display  = 'none';
+    $('canvasWrap').style.display  = 'block';
+    $('fileName').textContent      = file.name;
+    $('fileName').style.display    = 'block';
+    if (fontsOk) render();
+    else document.fonts.ready.then(render);
+  };
+  img.src = url;
+}
+
+const uz = $('uploadZone');
+uz.addEventListener('click',    () => $('fileInput').click());
+uz.addEventListener('keydown',  e => { if (e.key === 'Enter' || e.key === ' ') $('fileInput').click(); });
+uz.addEventListener('dragover', e => { e.preventDefault(); uz.classList.add('drag-on'); });
+uz.addEventListener('dragleave',() => uz.classList.remove('drag-on'));
+uz.addEventListener('drop', e => {
+  e.preventDefault();
+  uz.classList.remove('drag-on');
+  loadFile(e.dataTransfer.files[0]);
+});
+$('fileInput').addEventListener('change', e => loadFile(e.target.files[0]));
+
+/* ── Combo selects ──────────────────────────────────── */
+function bindCombo(selId, inId, key) {
+  const sel = $(selId);
+  const inp = $(inId);
+  sel.addEventListener('change', () => {
+    const isCustom = sel.value === '__c__';
+    inp.style.display = isCustom ? 'block' : 'none';
+    S[key] = isCustom ? inp.value : sel.value;
+    render();
+  });
+  inp.addEventListener('input', () => { S[key] = inp.value; render(); });
+}
+
+$('titleIn').addEventListener('input', e => { S.title = e.target.value; render(); });
+bindCombo('authorSel', 'authorIn', 'author');
+bindCombo('paperSel',  'paperIn',  'paper');
+bindCombo('mediumSel', 'mediumIn', 'medium');
+
+// Watermark combo
+const wmSel = $('wmSel'), wmIn = $('wmIn');
+wmSel.addEventListener('change', () => {
+  const isCustom = wmSel.value === '__c__';
+  wmIn.style.display = isCustom ? 'block' : 'none';
+  S.watermark = isCustom ? wmIn.value : wmSel.value;
+  render();
+});
+wmIn.addEventListener('input', () => { S.watermark = wmIn.value; render(); });
+
+/* ── Frame color swatches ───────────────────────────── */
+document.querySelectorAll('.swatch').forEach(sw => {
+  sw.addEventListener('click', () => {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('sel'));
+    sw.classList.add('sel');
+    S.bgColor = sw.dataset.color;
+    render();
+  });
+});
+
+/* ── Download ───────────────────────────────────────── */
+function download(ext) {
+  if (!S.img) { alert('画像をアップロードしてください'); return; }
+  render();
+  const safeName = (S.title || '作品').replace(/[\\/:*?"<>|]/g, '_');
+  const mime     = ext === 'jpg' ? 'image/jpeg' : 'image/png';
+  const quality  = ext === 'jpg' ? 0.95 : undefined;
+  const dataUrl  = quality !== undefined
+    ? cv.toDataURL(mime, quality)
+    : cv.toDataURL(mime);
+  const a = document.createElement('a');
+  a.href     = dataUrl;
+  a.download = `${safeName}.${ext}`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+$('dlJpg').addEventListener('click', () => download('jpg'));
+$('dlPng').addEventListener('click', () => download('png'));
+</script>
+
+</body>
+</html>
