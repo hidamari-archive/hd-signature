@@ -2,21 +2,31 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="署名アトリエ">
+  <meta name="theme-color" content="#F7F6F4">
   <title>署名アトリエ</title>
+
+  <!-- iOS ホーム画面アイコン -->
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="apple-touch-icon.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #F7F6F4;
-      --panel:   #FFFFFF;
-      --border:  #E6E2DC;
-      --text:    #282420;
-      --muted:   #9A9590;
-      --r:       5px;
+      --bg:     #F7F6F4;
+      --panel:  #FFFFFF;
+      --border: #E5E1DB;
+      --text:   #262220;
+      --muted:  #928E89;
+      --r:      5px;
     }
 
     html, body { height: 100%; }
@@ -30,37 +40,46 @@
       line-height: 1.65;
     }
 
-    /* ── Header ─────────────────────────────────────── */
+    /* ── Header ─────────────────────────────────── */
     .app-header {
       background: var(--panel);
       border-bottom: 1px solid var(--border);
-      padding: 18px 28px;
+      padding: 14px 20px;
       display: flex;
-      align-items: baseline;
-      gap: 16px;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
+    .header-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .header-text { display: flex; flex-direction: column; gap: 1px; }
     .app-title {
       font-family: 'Noto Serif JP', serif;
-      font-weight: 300;
-      font-size: 19px;
-      letter-spacing: 0.22em;
+      font-weight: 400;
+      font-size: 17px;
+      letter-spacing: 0.2em;
+      line-height: 1.2;
     }
     .app-sub {
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--muted);
       letter-spacing: 0.07em;
     }
 
-    /* ── Layout ─────────────────────────────────────── */
-    .app-body {
-      display: flex;
-      height: calc(100vh - 60px);
-    }
+    /* ── Layout ─────────────────────────────────── */
+    .app-body { display: flex; height: calc(100vh - 67px); }
 
-    /* ── Side Panel ─────────────────────────────────── */
+    /* ── Side Panel ─────────────────────────────── */
     .side-panel {
-      width: 296px;
-      min-width: 296px;
+      width: 288px;
+      min-width: 288px;
       background: var(--panel);
       border-right: 1px solid var(--border);
       overflow-y: auto;
@@ -68,30 +87,45 @@
       flex-direction: column;
       scrollbar-width: thin;
     }
-    .side-panel::-webkit-scrollbar { width: 4px; }
-    .side-panel::-webkit-scrollbar-track { background: transparent; }
+    .side-panel::-webkit-scrollbar { width: 3px; }
     .side-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-    .p-section {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
-    }
+    .p-section { padding: 16px 18px; border-bottom: 1px solid var(--border); }
     .p-section:last-child { border-bottom: none; }
 
+    .sec-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
     .sec-label {
       font-size: 9.5px;
       font-weight: 400;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 13px;
     }
+    .sec-edit {
+      font-size: 10px;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 7px;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 0.05em;
+      transition: all .15s;
+      line-height: 1.5;
+    }
+    .sec-edit:hover { background: var(--bg); color: var(--text); border-color: #bbb; }
 
     /* Upload */
     .upload-zone {
       border: 1.5px dashed var(--border);
       border-radius: var(--r);
-      padding: 18px 14px;
+      padding: 16px 12px;
       text-align: center;
       cursor: pointer;
       transition: border-color .2s, background .2s;
@@ -100,41 +134,28 @@
       -webkit-tap-highlight-color: transparent;
     }
     .upload-zone:hover, .upload-zone.drag-on {
-      border-color: #888;
+      border-color: #999;
       background: #FAFAF8;
     }
-    .upload-icon { font-size: 22px; display: block; margin-bottom: 7px; }
+    .upload-icon { font-size: 20px; display: block; margin-bottom: 6px; }
     .upload-main { font-size: 12px; }
-    .upload-hint { font-size: 10px; color: #C0BDB7; margin-top: 3px; }
-    .upload-name {
-      margin-top: 8px;
-      font-size: 11px;
-      color: var(--text);
-      font-weight: 400;
-      word-break: break-all;
-    }
+    .upload-hint { font-size: 10px; color: #C2BEB8; margin-top: 2px; }
+    .upload-name { margin-top: 7px; font-size: 11px; color: var(--text); font-weight: 400; word-break: break-all; }
 
     /* Fields */
-    .field { margin-bottom: 11px; }
+    .field { margin-bottom: 10px; }
     .field:last-child { margin-bottom: 0; }
-
-    .f-label {
-      display: block;
-      font-size: 10.5px;
-      color: var(--muted);
-      margin-bottom: 4px;
-      letter-spacing: 0.04em;
-    }
+    .f-label { display: block; font-size: 10.5px; color: var(--muted); margin-bottom: 4px; }
     .f-input, .f-select {
       width: 100%;
-      padding: 7px 10px;
+      padding: 8px 10px;
       border: 1px solid var(--border);
       border-radius: var(--r);
       font-family: 'Noto Sans JP', sans-serif;
-      font-weight: 300;
-      font-size: 12px;
+      font-weight: 400;
+      font-size: 13px;
       color: var(--text);
-      background: #FFFFFF;
+      background: #fff;
       outline: none;
       transition: border-color .15s;
     }
@@ -147,69 +168,54 @@
       padding-right: 28px;
       cursor: pointer;
     }
-    .f-input:focus, .f-select:focus { border-color: #999; }
+    .f-input:focus, .f-select:focus { border-color: #aaa; }
     .f-custom { margin-top: 6px; }
 
     /* Color swatches */
-    .swatches {
-      display: flex;
-      gap: 10px;
-    }
+    .swatches { display: flex; gap: 10px; }
     .sw-group { text-align: center; }
     .swatch {
       width: 30px;
       height: 30px;
       border-radius: 50%;
       cursor: pointer;
-      border: 1.5px solid transparent;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.10);
       transition: transform .15s;
       -webkit-tap-highlight-color: transparent;
+      display: block;
     }
     .swatch:hover { transform: scale(1.1); }
     .swatch.sel {
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15),
+      box-shadow: inset 0 0 0 1.5px rgba(0,0,0,0.15),
                   0 0 0 2px var(--panel),
                   0 0 0 4px #666;
       transform: scale(1.13);
     }
-    .sw-name {
-      font-size: 8.5px;
-      color: var(--muted);
-      margin-top: 4px;
-      letter-spacing: 0.02em;
-    }
+    .sw-name { font-size: 8.5px; color: var(--muted); margin-top: 4px; }
 
     /* Buttons */
     .btn-row { display: flex; gap: 8px; }
     .btn {
       flex: 1;
-      padding: 9px 12px;
+      padding: 10px 12px;
       border: 1px solid var(--border);
       border-radius: var(--r);
       font-family: 'Noto Sans JP', sans-serif;
-      font-weight: 300;
+      font-weight: 400;
       font-size: 12px;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       color: var(--text);
       background: #fff;
       cursor: pointer;
       transition: background .15s, color .15s, border-color .15s;
       -webkit-tap-highlight-color: transparent;
     }
-    .btn:hover {
-      background: var(--text);
-      color: #fff;
-      border-color: var(--text);
-    }
-    .btn-fill {
-      background: var(--text);
-      color: #fff;
-      border-color: var(--text);
-    }
+    .btn:hover { background: var(--text); color: #fff; border-color: var(--text); }
+    .btn:active { opacity: .8; }
+    .btn-fill { background: var(--text); color: #fff; border-color: var(--text); }
     .btn-fill:hover { background: #444; border-color: #444; }
 
-    /* ── Preview ─────────────────────────────────────── */
+    /* ── Preview ─────────────────────────────────── */
     .preview-area {
       flex: 1;
       display: flex;
@@ -219,12 +225,16 @@
       padding: 32px;
       background: var(--bg);
     }
-    .empty-state {
-      text-align: center;
-      color: var(--muted);
+    .empty-state { text-align: center; color: var(--muted); }
+    .empty-icon-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      display: block;
+      margin: 0 auto 16px;
+      opacity: .45;
     }
-    .empty-icon { font-size: 40px; display: block; margin-bottom: 14px; opacity: .22; }
-    .empty-text { font-size: 13px; line-height: 1.8; }
+    .empty-text { font-size: 13px; line-height: 1.9; }
 
     #canvas {
       display: block;
@@ -232,57 +242,106 @@
       max-height: calc(100vh - 130px);
       width: auto;
       height: auto;
-      box-shadow: 0 6px 32px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
+      box-shadow: 0 6px 36px rgba(0,0,0,0.13), 0 1px 4px rgba(0,0,0,0.05);
     }
     #canvasWrap { display: none; }
 
-    /* ── Mobile ─────────────────────────────────────── */
+    /* ── Preset Edit Modal ───────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal-box {
+      background: var(--panel);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+    .modal-head {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 14px; font-weight: 400; }
+    .modal-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .modal-body { padding: 14px 18px; }
+    .edit-area {
+      width: 100%;
+      min-height: 140px;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+      line-height: 1.7;
+    }
+    .edit-area:focus { border-color: #aaa; }
+    .modal-foot {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .modal-foot .btn { flex: none; padding: 8px 20px; }
+
+    /* ── Mobile ─────────────────────────────────── */
     @media (max-width: 680px) {
-      .app-header { padding: 14px 16px; }
-      .app-body { flex-direction: column; height: auto; }
+      .app-header { padding: 12px 14px; }
+      .app-body { flex-direction: column; height: auto; min-height: calc(100vh - 67px); }
       .side-panel {
         width: 100%;
         min-width: unset;
         border-right: none;
         border-bottom: 1px solid var(--border);
       }
-      .preview-area {
-        padding: 20px 16px;
-        min-height: 320px;
-      }
-      #canvas { max-height: 60vh; }
+      .preview-area { padding: 20px 14px; min-height: 280px; }
+      #canvas { max-height: 65vw; }
     }
   </style>
 </head>
 <body>
 
+<!-- ── Header ──────────────────────────────────────── -->
 <header class="app-header">
-  <h1 class="app-title">署名アトリエ</h1>
-  <span class="app-sub">作品に、静かな余白と署名を。</span>
+  <img src="apple-touch-icon.png" class="header-icon" alt="署名アトリエ">
+  <div class="header-text">
+    <h1 class="app-title">署名アトリエ</h1>
+    <span class="app-sub">作品に、静かな余白と署名を。</span>
+  </div>
 </header>
 
 <div class="app-body">
 
-  <!-- ── Control Panel ────────────────────────────── -->
+  <!-- ── Side Panel ──────────────────────────────── -->
   <aside class="side-panel">
 
     <!-- Upload -->
     <div class="p-section">
-      <div class="sec-label">作品画像</div>
-      <div class="upload-zone" id="uploadZone" role="button" tabindex="0"
-           aria-label="画像をアップロード">
+      <div class="sec-row"><span class="sec-label">作品画像</span></div>
+      <div class="upload-zone" id="uploadZone" role="button" tabindex="0">
         <span class="upload-icon">🖼</span>
         <div class="upload-main">タップまたはドロップ</div>
         <div class="upload-hint">JPG · PNG · WebP</div>
         <div class="upload-name" id="fileName" style="display:none"></div>
       </div>
-      <input type="file" id="fileInput" accept="image/*"
-             style="display:none" aria-hidden="true">
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
     </div>
 
     <!-- Artwork Info -->
     <div class="p-section">
-      <div class="sec-label">作品情報</div>
+      <div class="sec-row"><span class="sec-label">作品情報</span></div>
 
       <div class="field">
         <label class="f-label" for="titleIn">タイトル</label>
@@ -290,44 +349,31 @@
       </div>
 
       <div class="field">
-        <label class="f-label" for="authorSel">作者</label>
-        <select class="f-select" id="authorSel">
-          <option value="">— 選択 —</option>
-          <option value="ことは">ことは</option>
-          <option value="はるにゃ">はるにゃ</option>
-          <option value="Halnya">Halnya</option>
-          <option value="__c__">自由入力…</option>
-        </select>
+        <div class="sec-row" style="margin-bottom:4px">
+          <label class="f-label" for="authorSel" style="margin:0">作者</label>
+          <button class="sec-edit" data-edit-key="author">プリセット編集</button>
+        </div>
+        <select class="f-select" id="authorSel"></select>
         <input class="f-input f-custom" type="text" id="authorIn"
                placeholder="作者名" style="display:none">
       </div>
 
       <div class="field">
-        <label class="f-label" for="paperSel">紙・支持体</label>
-        <select class="f-select" id="paperSel">
-          <option value="">— 選択 —</option>
-          <option value="ウォーターフォード細目">ウォーターフォード細目</option>
-          <option value="マーメード">マーメード</option>
-          <option value="ダイソーエンボスペーパー">ダイソーエンボスペーパー</option>
-          <option value="AI生成">AI生成</option>
-          <option value="__c__">自由入力…</option>
-        </select>
+        <div class="sec-row" style="margin-bottom:4px">
+          <label class="f-label" for="paperSel" style="margin:0">紙・支持体</label>
+          <button class="sec-edit" data-edit-key="paper">プリセット編集</button>
+        </div>
+        <select class="f-select" id="paperSel"></select>
         <input class="f-input f-custom" type="text" id="paperIn"
                placeholder="紙・支持体" style="display:none">
       </div>
 
       <div class="field">
-        <label class="f-label" for="mediumSel">画材</label>
-        <select class="f-select" id="mediumSel">
-          <option value="">— 選択 —</option>
-          <option value="透明水彩">透明水彩</option>
-          <option value="水彩色鉛筆">水彩色鉛筆</option>
-          <option value="アクリル絵の具">アクリル絵の具</option>
-          <option value="アクリルマーカー">アクリルマーカー</option>
-          <option value="Gemini">Gemini</option>
-          <option value="Chat-GPT">Chat-GPT</option>
-          <option value="__c__">自由入力…</option>
-        </select>
+        <div class="sec-row" style="margin-bottom:4px">
+          <label class="f-label" for="mediumSel" style="margin:0">画材</label>
+          <button class="sec-edit" data-edit-key="medium">プリセット編集</button>
+        </div>
+        <select class="f-select" id="mediumSel"></select>
         <input class="f-input f-custom" type="text" id="mediumIn"
                placeholder="画材" style="display:none">
       </div>
@@ -335,31 +381,26 @@
 
     <!-- Frame Color -->
     <div class="p-section">
-      <div class="sec-label">額装カラー</div>
+      <div class="sec-row"><span class="sec-label">額装カラー</span></div>
       <div class="swatches">
         <div class="sw-group">
-          <div class="swatch sel" data-color="#FFFFFF"
-               style="background:#FFFFFF" title="白"></div>
+          <div class="swatch sel" data-color="#FFFFFF" style="background:#FFFFFF"></div>
           <div class="sw-name">白</div>
         </div>
         <div class="sw-group">
-          <div class="swatch" data-color="#F5F5F0"
-               style="background:#F5F5F0" title="アイボリー"></div>
+          <div class="swatch" data-color="#F5F5F0" style="background:#F5F5F0"></div>
           <div class="sw-name">象牙</div>
         </div>
         <div class="sw-group">
-          <div class="swatch" data-color="#D9D4CC"
-               style="background:#D9D4CC" title="グレージュ"></div>
+          <div class="swatch" data-color="#D9D4CC" style="background:#D9D4CC"></div>
           <div class="sw-name">灰白</div>
         </div>
         <div class="sw-group">
-          <div class="swatch" data-color="#808080"
-               style="background:#808080" title="グレー"></div>
+          <div class="swatch" data-color="#808080" style="background:#808080"></div>
           <div class="sw-name">灰</div>
         </div>
         <div class="sw-group">
-          <div class="swatch" data-color="#1A1A1A"
-               style="background:#1A1A1A" title="黒"></div>
+          <div class="swatch" data-color="#1A1A1A" style="background:#1A1A1A"></div>
           <div class="sw-name">黒</div>
         </div>
       </div>
@@ -367,48 +408,94 @@
 
     <!-- Watermark -->
     <div class="p-section">
-      <div class="sec-label">透かし（ウォーターマーク）</div>
-      <div class="field">
-        <label class="f-label" for="wmSel">テキスト</label>
-        <select class="f-select" id="wmSel">
-          <option value="ko-to-ha">ko-to-ha</option>
-          <option value="Halnya">Halnya</option>
-          <option value="__c__">自由入力…</option>
-          <option value="">なし</option>
-        </select>
-        <input class="f-input f-custom" type="text" id="wmIn"
-               placeholder="透かしテキスト" style="display:none">
+      <div class="sec-row">
+        <span class="sec-label">透かし</span>
+        <button class="sec-edit" data-edit-key="wm">プリセット編集</button>
       </div>
+      <select class="f-select" id="wmSel"></select>
+      <input class="f-input f-custom" type="text" id="wmIn"
+             placeholder="透かしテキスト" style="display:none; margin-top:6px">
     </div>
 
     <!-- Export -->
     <div class="p-section">
-      <div class="sec-label">書き出し</div>
+      <div class="sec-row"><span class="sec-label">書き出し</span></div>
       <div class="btn-row">
-        <button class="btn btn-fill" id="dlJpg">↓ JPG</button>
-        <button class="btn"          id="dlPng">↓ PNG</button>
+        <button class="btn btn-fill" id="dlJpg">保存 / 共有 JPG</button>
+        <button class="btn"          id="dlPng">PNG</button>
       </div>
+      <p style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.6">
+        iOSでは「共有シート → 画像を保存」でカメラロールへ。
+      </p>
     </div>
 
   </aside>
 
-  <!-- ── Preview Area ──────────────────────────────── -->
+  <!-- ── Preview ─────────────────────────────────── -->
   <main class="preview-area">
     <div class="empty-state" id="emptyState">
-      <span class="empty-icon">🎨</span>
+      <img src="apple-touch-icon.png" class="empty-icon-img" alt="">
       <p class="empty-text">画像をアップロードすると<br>プレビューが表示されます</p>
     </div>
-    <div id="canvasWrap">
-      <canvas id="canvas"></canvas>
-    </div>
+    <div id="canvasWrap"><canvas id="canvas"></canvas></div>
   </main>
 
+</div>
+
+<!-- ── Preset Edit Modal ─────────────────────────── -->
+<div class="modal-overlay" id="editModal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="editModalTitle">プリセット編集</div>
+      <div class="modal-hint">1行に1つずつ入力。順番はそのまま反映されます。</div>
+    </div>
+    <div class="modal-body">
+      <textarea class="edit-area" id="editArea" spellcheck="false"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="editCancel">キャンセル</button>
+      <button class="btn btn-fill" id="editSave">保存</button>
+    </div>
+  </div>
 </div>
 
 <script>
 'use strict';
 
-/* ── State ──────────────────────────────────────────── */
+/* ── Default presets ────────────────────────────── */
+const DEFAULT_PRESETS = {
+  author: ['ことは', 'はるにゃ', 'Halnya'],
+  paper:  ['ウォーターフォード細目', 'マーメード', 'ダイソーエンボスペーパー', 'AI生成'],
+  medium: ['透明水彩', '水彩色鉛筆', 'アクリル絵の具', 'アクリルマーカー', 'Gemini', 'Chat-GPT'],
+  wm:     ['ko-to-ha', 'Halnya'],
+};
+
+const PRESET_LABELS = {
+  author: '作者',
+  paper:  '紙・支持体',
+  medium: '画材',
+  wm:     '透かし',
+};
+
+/* ── Preset persistence ─────────────────────────── */
+function loadPresets() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('atelier_presets') || 'null');
+    if (!saved) return structuredClone(DEFAULT_PRESETS);
+    // Merge: keep saved if present, else default
+    const merged = {};
+    for (const k of Object.keys(DEFAULT_PRESETS)) {
+      merged[k] = Array.isArray(saved[k]) && saved[k].length ? saved[k] : DEFAULT_PRESETS[k].slice();
+    }
+    return merged;
+  } catch { return structuredClone(DEFAULT_PRESETS); }
+}
+function savePresets(p) {
+  try { localStorage.setItem('atelier_presets', JSON.stringify(p)); } catch {}
+}
+let PRESETS = loadPresets();
+
+/* ── State ──────────────────────────────────────── */
 const S = {
   img:       null,
   title:     '',
@@ -416,39 +503,40 @@ const S = {
   paper:     '',
   medium:    '',
   bgColor:   '#FFFFFF',
-  watermark: 'ko-to-ha',
+  watermark: PRESETS.wm[0] || '',
 };
 
-/* ── DOM ────────────────────────────────────────────── */
-const $  = id => document.getElementById(id);
+/* ── DOM helpers ────────────────────────────────── */
+const $ = id => document.getElementById(id);
 const cv = $('canvas');
 const cx = cv.getContext('2d');
 
-/* ── Font loading ───────────────────────────────────── */
+/* ── Font loading ───────────────────────────────── */
 let fontsOk = false;
-document.fonts.ready.then(() => {
-  fontsOk = true;
-  render();
-});
+document.fonts.ready.then(() => { fontsOk = true; render(); });
 
-/* ── Luminance / adaptive text colors ──────────────── */
-function luminance(hex) {
-  const h = hex.replace('#', '');
-  const r = parseInt(h.slice(0,2), 16) / 255;
-  const g = parseInt(h.slice(2,4), 16) / 255;
-  const b = parseInt(h.slice(4,6), 16) / 255;
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
+/* ── Per-background color palettes ─────────────── */
+// Carefully tuned for readability on each frame color
+const PALETTES = {
+  '#FFFFFF': { primary: '#1A1816', secondary: '#5A5652', hairline: 'rgba(0,0,0,0.08)' },
+  '#F5F5F0': { primary: '#1A1816', secondary: '#5A5652', hairline: 'rgba(0,0,0,0.08)' },
+  '#D9D4CC': { primary: '#1A1816', secondary: '#3E3A36', hairline: 'rgba(0,0,0,0.12)' },
+  '#808080': { primary: '#F8F5F0', secondary: '#EAE7E2', hairline: 'rgba(255,255,255,0.20)' },
+  '#1A1A1A': { primary: '#F4F1EC', secondary: '#D0CCC6', hairline: 'rgba(255,255,255,0.14)' },
+};
 function palette(bg) {
-  const l = luminance(bg);
-  return {
-    primary:  l > 0.38 ? '#2A2420' : '#F0EDE8',
-    secondary:l > 0.38 ? '#8A8480' : '#B0ACA6',
-    hairline: l > 0.38 ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,0.12)',
-  };
+  return PALETTES[bg] || PALETTES['#FFFFFF'];
 }
 
-/* ── Render ─────────────────────────────────────────── */
+/* ── Canvas text truncation ─────────────────────── */
+function truncate(text, maxW) {
+  if (cx.measureText(text).width <= maxW) return text;
+  let s = text;
+  while (s.length > 1 && cx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
+  return s + '…';
+}
+
+/* ── Render ─────────────────────────────────────── */
 function render() {
   if (!S.img) return;
 
@@ -456,9 +544,9 @@ function render() {
   const iw  = img.naturalWidth;
   const ih  = img.naturalHeight;
 
-  // Margins
-  const sm = Math.round(Math.max(8, iw * 0.011));   // side + top (thin)
-  const bm = Math.round(ih * 0.18);                  // bottom caption area
+  // Margins: thin sides/top, wide bottom caption
+  const sm = Math.round(Math.max(8, iw * 0.010));    // side + top
+  const bm = Math.round(ih * 0.18);                   // bottom caption height
 
   const cw = iw + sm * 2;
   const ch = ih + sm + bm;
@@ -475,7 +563,7 @@ function render() {
   // Image
   cx.drawImage(img, sm, sm, iw, ih);
 
-  // Hairline between image and caption
+  // Hairline separator
   cx.strokeStyle = pal.hairline;
   cx.lineWidth   = 1;
   cx.beginPath();
@@ -483,69 +571,139 @@ function render() {
   cx.lineTo(sm + iw, sm + ih + 0.5);
   cx.stroke();
 
-  // ── Caption ─────────────────────────────────────────
+  // ── Caption layout ───────────────────────────────
+  // Font sizes proportional to image width (spec: ~2% of width)
+  const titleSz  = Math.max(15, Math.round(iw * 0.022));
+  const authorSz = Math.max(12, Math.round(iw * 0.016));
+  const subSz    = Math.max(11, Math.round(iw * 0.013));
+  const lineGap  = Math.round(authorSz * 0.65);
+
   const capTop  = sm + ih;
-  const capLeft = sm + Math.round(iw * 0.042);
+  const padX    = sm + Math.round(iw * 0.038);        // left/right inner padding
+  const rightX  = sm + iw - Math.round(iw * 0.038);   // right edge for right-aligned text
 
-  // Font sizes scaled to caption height
-  const titleSz  = Math.round(Math.max(14, bm * 0.215));
-  const authorSz = Math.round(Math.max(10, bm * 0.138));
-  const subSz    = Math.round(Math.max(9,  bm * 0.115));
-  const lineGap  = Math.round(bm * 0.072);
-
-  // Build text lines
-  const lines = [];
-  if (S.author) lines.push({
-    text: S.author, size: authorSz, color: pal.secondary, weight: '300',
-    font: `300 ${authorSz}px "Noto Sans JP", sans-serif`,
-  });
-  if (S.title) lines.push({
-    text: S.title, size: titleSz, color: pal.primary, weight: '300',
-    font: `300 ${titleSz}px "Noto Serif JP", "游明朝", YuMincho, serif`,
-  });
+  // Right column: Author (line 1) + Medium/Paper (line 2)
   const sub = [S.medium, S.paper].filter(Boolean).join(' / ');
-  if (sub) lines.push({
-    text: sub, size: subSz, color: pal.secondary, weight: '300',
-    font: `300 ${subSz}px "Noto Sans JP", sans-serif`,
-  });
+  const rightLines = [];
+  if (S.author) rightLines.push({ text: S.author, size: authorSz });
+  if (sub)      rightLines.push({ text: sub,       size: subSz    });
 
-  if (lines.length > 0) {
-    const totalH = lines.reduce((s, l) => s + l.size, 0) +
-                   (lines.length - 1) * lineGap;
-    let y = capTop + Math.round((bm - totalH) / 2) + lines[0].size;
+  const maxTitleW  = iw * 0.54;
+  const maxRightW  = iw * 0.44;
 
-    cx.textBaseline = 'alphabetic';
-    lines.forEach(line => {
-      cx.font      = line.font;
-      cx.fillStyle = line.color;
-      cx.fillText(line.text, capLeft, y);
-      y += line.size + lineGap;
-    });
+  cx.textBaseline = 'alphabetic';
+
+  // ── Title: left-aligned, vertically centered ────
+  if (S.title) {
+    cx.font      = `400 ${titleSz}px "Noto Serif JP", "游明朝", YuMincho, serif`;
+    cx.fillStyle = pal.primary;
+    const ty = capTop + Math.round((bm + titleSz * 0.5) / 2);
+    cx.fillText(truncate(S.title, maxTitleW), padX, ty);
   }
 
-  // ── Watermark ───────────────────────────────────────
+  // ── Right column: right-aligned, vertically centered ──
+  if (rightLines.length > 0) {
+    const rcH = rightLines.reduce((s, l) => s + l.size, 0) +
+                (rightLines.length - 1) * lineGap;
+    let ry = capTop + Math.round((bm - rcH) / 2) + rightLines[0].size;
+
+    cx.textAlign = 'right';
+    rightLines.forEach((line, i) => {
+      const fam = i === 0
+        ? '"Noto Sans JP", "游ゴシック", sans-serif'
+        : '"Noto Sans JP", sans-serif';
+      cx.font      = `400 ${line.size}px ${fam}`;
+      cx.fillStyle = pal.secondary;
+      cx.fillText(truncate(line.text, maxRightW), rightX, ry);
+      ry += line.size + lineGap;
+    });
+    cx.textAlign = 'left';
+  }
+
+  // ── Watermark (画像内・右下) ─────────────────────
   if (S.watermark) {
-    const wmSz  = Math.round(Math.max(9, iw * 0.021));
+    const wmSz  = Math.max(9, Math.round(iw * 0.020));
     cx.font     = `300 ${wmSz}px "Noto Sans JP", sans-serif`;
     cx.textBaseline = 'alphabetic';
-
     const wmW   = cx.measureText(S.watermark).width;
-    const wmPad = Math.round(Math.max(7, iw * 0.013));
-
-    const wx = sm + iw - wmW - wmPad;
-    const wy = sm + ih - wmPad;
+    const wmPad = Math.round(Math.max(8, iw * 0.013));
+    const wx    = sm + iw - wmW - wmPad;
+    const wy    = sm + ih - wmPad;
 
     cx.save();
-    cx.globalAlpha   = 0.17;
-    cx.shadowColor   = 'rgba(0,0,0,0.45)';
-    cx.shadowBlur    = 4;
-    cx.fillStyle     = '#FFFFFF';
+    cx.globalAlpha = 0.18;
+    cx.shadowColor = 'rgba(0,0,0,0.50)';
+    cx.shadowBlur  = 4;
+    cx.fillStyle   = '#FFFFFF';
     cx.fillText(S.watermark, wx, wy);
     cx.restore();
   }
 }
 
-/* ── File loading ───────────────────────────────────── */
+/* ── Populate select ────────────────────────────── */
+function buildSelect(selEl, key, currentVal) {
+  const items = PRESETS[key] || [];
+  selEl.innerHTML =
+    `<option value="">— 選択 —</option>` +
+    items.map(v => `<option value="${esc(v)}"${v === currentVal ? ' selected' : ''}>${esc(v)}</option>`).join('') +
+    `<option value="__c__">自由入力…</option>`;
+}
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+/* ── Combo select + custom input ───────────────── */
+function bindCombo(selId, inId, key) {
+  const sel = $(selId);
+  const inp = $(inId);
+  buildSelect(sel, key, S[key]);
+
+  sel.addEventListener('change', () => {
+    const isCustom = sel.value === '__c__';
+    inp.style.display = isCustom ? 'block' : 'none';
+    S[key] = isCustom ? inp.value : sel.value;
+    render();
+  });
+  inp.addEventListener('input', () => { S[key] = inp.value; render(); });
+}
+
+// Watermark select (no state key – uses S.watermark)
+function buildWmSelect(currentVal) {
+  const sel = $('wmSel');
+  const items = PRESETS.wm || [];
+  sel.innerHTML =
+    `<option value="">なし</option>` +
+    items.map(v => `<option value="${esc(v)}"${v === currentVal ? ' selected' : ''}>${esc(v)}</option>`).join('') +
+    `<option value="__c__">自由入力…</option>`;
+}
+
+/* ── Init inputs ────────────────────────────────── */
+$('titleIn').addEventListener('input', e => { S.title = e.target.value; render(); });
+
+bindCombo('authorSel', 'authorIn', 'author');
+bindCombo('paperSel',  'paperIn',  'paper');
+bindCombo('mediumSel', 'mediumIn', 'medium');
+
+buildWmSelect(S.watermark);
+const wmSel = $('wmSel');
+const wmIn  = $('wmIn');
+wmSel.addEventListener('change', () => {
+  const isCustom = wmSel.value === '__c__';
+  wmIn.style.display = isCustom ? 'block' : 'none';
+  S.watermark = isCustom ? wmIn.value : wmSel.value;
+  render();
+});
+wmIn.addEventListener('input', () => { S.watermark = wmIn.value; render(); });
+
+/* ── Frame color swatches ───────────────────────── */
+document.querySelectorAll('.swatch').forEach(sw => {
+  sw.addEventListener('click', () => {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('sel'));
+    sw.classList.add('sel');
+    S.bgColor = sw.dataset.color;
+    render();
+  });
+});
+
+/* ── File upload ────────────────────────────────── */
 function loadFile(file) {
   if (!file || !file.type.startsWith('image/')) return;
   const url = URL.createObjectURL(file);
@@ -563,76 +721,104 @@ function loadFile(file) {
 }
 
 const uz = $('uploadZone');
-uz.addEventListener('click',    () => $('fileInput').click());
-uz.addEventListener('keydown',  e => { if (e.key === 'Enter' || e.key === ' ') $('fileInput').click(); });
-uz.addEventListener('dragover', e => { e.preventDefault(); uz.classList.add('drag-on'); });
-uz.addEventListener('dragleave',() => uz.classList.remove('drag-on'));
-uz.addEventListener('drop', e => {
-  e.preventDefault();
-  uz.classList.remove('drag-on');
-  loadFile(e.dataTransfer.files[0]);
-});
+uz.addEventListener('click',     () => $('fileInput').click());
+uz.addEventListener('keydown',   e => { if (e.key === 'Enter' || e.key === ' ') $('fileInput').click(); });
+uz.addEventListener('dragover',  e => { e.preventDefault(); uz.classList.add('drag-on'); });
+uz.addEventListener('dragleave', () => uz.classList.remove('drag-on'));
+uz.addEventListener('drop',      e => { e.preventDefault(); uz.classList.remove('drag-on'); loadFile(e.dataTransfer.files[0]); });
 $('fileInput').addEventListener('change', e => loadFile(e.target.files[0]));
 
-/* ── Combo selects ──────────────────────────────────── */
-function bindCombo(selId, inId, key) {
-  const sel = $(selId);
-  const inp = $(inId);
-  sel.addEventListener('change', () => {
-    const isCustom = sel.value === '__c__';
-    inp.style.display = isCustom ? 'block' : 'none';
-    S[key] = isCustom ? inp.value : sel.value;
-    render();
+/* ── Download / Share ───────────────────────────── */
+function canvasToBlob(mime, quality) {
+  return new Promise(resolve => {
+    if (quality !== undefined) cv.toBlob(resolve, mime, quality);
+    else                       cv.toBlob(resolve, mime);
   });
-  inp.addEventListener('input', () => { S[key] = inp.value; render(); });
 }
 
-$('titleIn').addEventListener('input', e => { S.title = e.target.value; render(); });
-bindCombo('authorSel', 'authorIn', 'author');
-bindCombo('paperSel',  'paperIn',  'paper');
-bindCombo('mediumSel', 'mediumIn', 'medium');
-
-// Watermark combo
-const wmSel = $('wmSel'), wmIn = $('wmIn');
-wmSel.addEventListener('change', () => {
-  const isCustom = wmSel.value === '__c__';
-  wmIn.style.display = isCustom ? 'block' : 'none';
-  S.watermark = isCustom ? wmIn.value : wmSel.value;
-  render();
-});
-wmIn.addEventListener('input', () => { S.watermark = wmIn.value; render(); });
-
-/* ── Frame color swatches ───────────────────────────── */
-document.querySelectorAll('.swatch').forEach(sw => {
-  sw.addEventListener('click', () => {
-    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('sel'));
-    sw.classList.add('sel');
-    S.bgColor = sw.dataset.color;
-    render();
-  });
-});
-
-/* ── Download ───────────────────────────────────────── */
-function download(ext) {
+async function saveImage(ext) {
   if (!S.img) { alert('画像をアップロードしてください'); return; }
   render();
+
   const safeName = (S.title || '作品').replace(/[\\/:*?"<>|]/g, '_');
   const mime     = ext === 'jpg' ? 'image/jpeg' : 'image/png';
   const quality  = ext === 'jpg' ? 0.95 : undefined;
-  const dataUrl  = quality !== undefined
-    ? cv.toDataURL(mime, quality)
-    : cv.toDataURL(mime);
+
+  // Web Share API → iOSカメラロールへ保存可能
+  if (typeof navigator.share === 'function') {
+    try {
+      const blob = await canvasToBlob(mime, quality);
+      const file = new File([blob], `${safeName}.${ext}`, { type: mime });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: S.title || '作品' });
+        return;
+      }
+    } catch (e) {
+      if (e.name === 'AbortError') return; // ユーザーがキャンセル
+      // その他のエラーは通常ダウンロードにフォールバック
+    }
+  }
+
+  // 通常ダウンロード（Android/PC）
+  const dataUrl = quality ? cv.toDataURL(mime, quality) : cv.toDataURL(mime);
   const a = document.createElement('a');
-  a.href     = dataUrl;
+  a.href = dataUrl;
   a.download = `${safeName}.${ext}`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
 }
 
-$('dlJpg').addEventListener('click', () => download('jpg'));
-$('dlPng').addEventListener('click', () => download('png'));
-</script>
+$('dlJpg').addEventListener('click', () => saveImage('jpg'));
+$('dlPng').addEventListener('click', () => saveImage('png'));
 
+/* ── Preset Editor Modal ────────────────────────── */
+let editingKey = null;
+
+document.querySelectorAll('[data-edit-key]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    editingKey = btn.dataset.editKey;
+    $('editModalTitle').textContent = `プリセット編集 — ${PRESET_LABELS[editingKey]}`;
+    $('editArea').value = (PRESETS[editingKey] || []).join('\n');
+    const modal = $('editModal');
+    modal.style.display = 'flex';
+    setTimeout(() => $('editArea').focus(), 50);
+  });
+});
+
+$('editCancel').addEventListener('click', closeModal);
+$('editModal').addEventListener('click', e => { if (e.target === $('editModal')) closeModal(); });
+
+$('editSave').addEventListener('click', () => {
+  if (!editingKey) return;
+  const lines = $('editArea').value
+    .split('\n')
+    .map(l => l.trim())
+    .filter(Boolean);
+  PRESETS[editingKey] = lines;
+  savePresets(PRESETS);
+
+  // Rebuild affected select
+  if (editingKey === 'wm') {
+    buildWmSelect(S.watermark);
+  } else {
+    const selId = editingKey + 'Sel';
+    const sel = $(selId);
+    if (sel) buildSelect(sel, editingKey, S[editingKey]);
+  }
+  closeModal();
+  render();
+});
+
+function closeModal() {
+  $('editModal').style.display = 'none';
+  editingKey = null;
+}
+
+// Close on Esc
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('editModal').style.display !== 'none') closeModal();
+});
+</script>
 </body>
 </html>
